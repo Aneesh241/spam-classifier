@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Email Classifier - Detect spam emails and generate AI responses">
+  <title>Smart Email Classifier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --bg-light: #ffffff;
+      --bg-dark: #111827;
+      --card-light: #f9fafb;
+      --card-dark: #1f2937;
+      --text-light: #111827;
+      --text-dark: #f9fafb;
+      --border-light: #e5e7eb;
+      --border-dark: #374151;
+      --input-light: #f3f4f6;
+      --input-dark: #374151;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s ease-in-out;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background-color: #e5e7eb;
+      border-radius: 24px;
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .theme-switch-inner {
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background-color: white;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark .theme-switch {
+      background-color: var(--primary);
+    }
+
+    body.dark .theme-switch-inner {
+      transform: translateX(24px);
+    }
+
+    .card {
+      background-color: var(--card-light);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+
+    body.dark .card {
+      background-color: var(--card-dark);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .text-area {
+      width: 100%;
+      min-height: 180px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-light);
+      background-color: var(--input-light);
+      color: var(--text-light);
+      font-size: 16px;
+      resize: vertical;
+      margin-bottom: 20px;
+      transition: border-color 0.15s ease-in-out;
+    }
+
+    body.dark .text-area {
+      border: 1px solid var(--border-dark);
+      background-color: var(--input-dark);
+      color: var(--text-dark);
+    }
+
+    .text-area:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+    }
+
+    .button-icon {
+      font-size: 18px;
+    }
+
+    .flash-messages {
+      margin-bottom: 20px;
+    }
+
+    .flash-message {
+      padding: 12px 16px;
+      border-radius: 10px;
+      background-color: var(--warning);
+      color: white;
+      font-size: 15px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-container {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .result-card {
+      padding: 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .result-spam {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .result-safe {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .result-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 20px;
+    }
+
+    .result-spam .result-icon {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .result-safe .result-icon {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .result-content {
+      flex: 1;
+    }
+
+    .result-title {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .result-description {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    body.dark .result-description {
+      color: #9ca3af;
+    }
+
+    .confidence-meter {
+      margin-top: 10px;
+      position: relative;
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .confidence-bar {
+      height: 100%;
+      background-color: var(--success);
+      border-radius: 4px;
+    }
+
+    .result-spam .confidence-bar {
+      background-color: var(--danger);
+    }
+
+    .confidence-label {
+      font-size: 13px;
+      margin-top: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .response-card {
+      background-color: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .response-header {
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .response-content {
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .form-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message-counter {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    body.dark .message-counter {
+      color: #9ca3af;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    body.dark .footer {
+      color: #9ca3af;
+    }
+
+    .copy-button {
+      background-color: transparent;
+      border: 1px solid var(--border-light);
+      color: #6b7280;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .copy-button:hover {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    body.dark .copy-button {
+      border-color: var(--border-dark);
+      color: #9ca3af;
+    }
+
+    body.dark .copy-button:hover {
+      background-color: rgba(79, 70, 229, 0.1);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    @media (max-width: 640px) {
+      .app-container {
+        padding: 0;
+      }
+      
+      .card {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      
+      .title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <h1 class="title">Smart Email Classifier</h1>
+      <div class="theme-toggle">
+        <span id="theme-icon">🌙</span>
+        <div id="theme-switch" class="theme-switch" onclick="toggleTheme()" role="switch" aria-checked="false" tabindex="0">
+          <div class="theme-switch-inner"></div>
+        </div>
+      </div>
+    </div>
+    
+    {% if get_flashed_messages() %}
+    <div class="flash-messages">
+      {% for message in get_flashed_messages() %}
+        <div class="flash-message">
+          <span>⚠️</span> {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="card">
+      <h2 class="card-title">
+        <span id="card-icon" aria-hidden="true">✉️</span>
+        Check your email content
+      </h2>
+      
+      <form method="POST" id="email-form">
+        <label for="email-input" class="sr-only">Email content</label>
+        <textarea 
+          class="text-area" 
+          name="email" 
+          id="email-input" 
+          placeholder="Paste your email content here to check if it's spam..."
+          oninput="updateCounter()"
+          aria-required="true"
+        ></textarea>
+        
+        <div class="form-row">
+          <div class="message-counter">
+            <span id="character-count">0</span> characters
+          </div>
+          
+          <button type="submit" class="button">
+            <span class="button-icon" aria-hidden="true">🔍</span>
+            Analyze Email
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    {% if result is not none %}
+    <div class="result-container">
+      <div class="result-card {% if result == 'Spam' %}result-spam{% else %}result-safe{% endif %}">
+        <div class="result-icon" aria-hidden="true">
+          {% if result == 'Spam' %}⚠️{% else %}✓{% endif %}
+        </div>
+        <div class="result-content">
+          <h3 class="result-title">
+            {% if result == 'Spam' %}Potential Spam Detected{% else %}Email Appears Safe{% endif %}
+          </h3>
+          <p class="result-description">
+            {% if result == 'Spam' %}
+            This email contains characteristics commonly found in spam messages.
+            {% else %}
+            No spam indicators were found in this email content.
+            {% endif %}
+          </p>
+          
+          {% if confidence_score is not none %}
+          <div class="confidence-meter" aria-label="Confidence score: {{ confidence_score }}%">
+            <div class="confidence-bar" style="width: {{ confidence_score }}%"></div>
+          </div>
+          <div class="confidence-label">
+            <span>Confidence: {{ confidence_score }}%</span>
+            <span>{% if confidence_score > 97 %}100%{% endif %}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if ai_response %}
+    <div class="response-card">
+      <h3 class="response-header">
+        <span aria-hidden="true">💬</span>
+        AI Suggested Response
+      </h3>
+      <div class="response-content">{{ ai_response }}</div>
+      <button class="copy-button" onclick="copyResponse()">
+        <span>📋</span> Copy to clipboard
+      </button>
+    </div>
+    {% endif %}
+  </div>
+  
+  <div class="footer">
+    © 2025 Smart Email Classifier • Powered by AI
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('theme-icon');
+      const themeSwitch = document.getElementById('theme-switch');
+      
+      body.classList.toggle('dark');
+      
+      const isDark = body.classList.contains('dark');
+      if (isDark) {
+        themeIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+        themeSwitch.setAttribute('aria-checked', 'true');
+      } else {
+        themeIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+        themeSwitch.setAttribute('aria-checked', 'false');
+      }
+    }
+    
+    // Theme switch keyboard accessibility
+    document.getElementById('theme-switch').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleTheme();
+      }
+    });
+    
+    // Character counter
+    function updateCounter() {
+      const textarea = document.getElementById('email-input');
+      const counter = document.getElementById('character-count');
+      counter.textContent = textarea.value.length;
+    }
+    
+    // Copy response to clipboard
+    function copyResponse() {
+      const responseText = document.querySelector('.response-content').textContent;
+      navigator.clipboard.writeText(responseText).then(() => {
+        const copyButton = document.querySelector('.copy-button');
+        const originalText = copyButton.innerHTML;
+        
+        copyButton.innerHTML = '<span>✓</span> Copied!';
+        copyButton.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+        copyButton.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        
+        setTimeout(() => {
+          copyButton.innerHTML = originalText;
+          copyButton.style.backgroundColor = '';
+          copyButton.style.borderColor = '';
+        }, 2000);
+      });
+    }
+    
+    // Initialize theme from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeSwitch = document.getElementById('theme-switch');
+      
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        themeIcon.textContent = '☀️';
+        themeSwitch.setAttribute('aria-checked', 'true');
+      }
+      
+      // Initialize counter
+      updateCounter();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+Flask
+scikit-learn
+pandas
+joblib
+google-generativeai
+nltk
+python-dotenv
+gunicorn
+numpy

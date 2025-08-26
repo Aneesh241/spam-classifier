@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+env/
+venv/
+
+# VS Code
+.vscode/
+
+# Secrets
+config.env
+*.env
+
+# Logs
+*.log
+
+# OS junk
+.DS_Store
