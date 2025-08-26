@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -18,3 +18,4 @@ config.env
 
 # OS junk
 .DS_Store
+
