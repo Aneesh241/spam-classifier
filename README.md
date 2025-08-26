@@ -1,20 +1,20 @@
-﻿# ðŸ“§ Smart Email Classifier (Spam Detection + AI Response Generator)
+# 📧 Smart Email Classifier (Spam Detection + AI Response Generator)
 
 This project is a **Spam Email Classifier** with a modern web interface, built using **Machine Learning (scikit-learn)** and **Flask**.  
 It not only detects whether an email is **Spam** or **Not Spam**, but also uses **Google Gemini API** to generate professional email replies for safe emails.
 
 ---
 
-## âœ¨ Features
-- ðŸ” **Spam Detection** using a trained Naive Bayes model with TF-IDF vectorization.
-- ðŸ“Š **Confidence Score** shown for every prediction.
-- ðŸ¤– **AI-Powered Responses** for non-spam emails via **Google Gemini API**.
-- ðŸŽ¨ **Modern Web UI** with dark/light mode and interactive elements.
-- ðŸ“‚ **Reusable ML Pipeline** for retraining and saving models.
+## ✨ Features
+- 🔍 **Spam Detection** using a trained Naive Bayes model with TF-IDF vectorization.
+- 📊 **Confidence Score** shown for every prediction.
+- 🤖 **AI-Powered Responses** for non-spam emails via **Google Gemini API**.
+- 🎨 **Modern Web UI** with dark/light mode and interactive elements.
+- 📂 **Reusable ML Pipeline** for retraining and saving models.
 
 ---
 
-## ðŸ› ï¸ Tech Stack
+## 🛠️ Tech Stack
 - **Backend:** Flask, scikit-learn, joblib
 - **Frontend:** HTML5, CSS3, JavaScript (Jinja2 templating)
 - **ML Pipeline:** TF-IDF Vectorizer + Multinomial Naive Bayes
@@ -24,10 +24,10 @@ It not only detects whether an email is **Spam** or **Not Spam**, but also uses 
 
 ---
 
-## ðŸ“‚ Project Structure
+## 📂 Project Structure
 ```
 templates/
- â””â”€â”€ index.html         # Web UI (dark/light mode, results, response)
+ └── index.html         # Web UI (dark/light mode, results, response)
 app.py                  # Flask app (loads model, serves predictions)
 spam_classifier.py      # ML training pipeline (preprocessing + training + saving models)
 spam_dataset.csv        # Dataset for training (sample dataset included)
@@ -41,7 +41,7 @@ README.md               # Project documentation
 
 ---
 
-## âš™ï¸ Setup Instructions
+## ⚙️ Setup Instructions
 
 ### 1. Clone the repository
 ```bash
@@ -82,11 +82,11 @@ FLASK_DEBUG=False
 PORT=5000
 ```
 
-âš ï¸ **Note:** `config.env` is ignored by Git to protect secrets.
+⚠️ **Note:** `config.env` is ignored by Git to protect secrets.
 
 ---
 
-## â–¶ï¸ Running the Application
+## ▶️ Running the Application
 
 ```bash
 python app.py
@@ -97,12 +97,12 @@ Flask will start locally on:
 http://127.0.0.1:5000/
 ```
 
-Paste an email message into the text area â†’ see whether itâ€™s **Spam** or **Not Spam**.  
+Paste an email message into the text area → see whether it’s **Spam** or **Not Spam**.  
 If **Not Spam**, the app will also suggest an **AI-generated email reply**.
 
 ---
 
-## ðŸ“Š Training / Retraining the Model
+## 📊 Training / Retraining the Model
 If you want to retrain with a new dataset:
 
 ```bash
@@ -118,7 +118,7 @@ This will:
 
 ---
 
-## ðŸŒ Deployment
+## 🌐 Deployment
 For production, run with Gunicorn:
 ```bash
 gunicorn app:app
@@ -132,15 +132,19 @@ Can be deployed on:
 
 ---
 
-## ðŸ”’ Security Notes
+## 🔒 Security Notes
 - Never commit your real `config.env` or API keys.
 - Rotate your **Google API key** if it was exposed.
 - Use `.gitignore` (already included) to keep secrets safe.
 
 ---
 
-## ðŸ“œ License
-MIT License â€“ You are free to use, modify, and distribute this project for educational and personal purposes.
+## 📜 License
+MIT License – You are free to use, modify, and distribute this project for educational and personal purposes.
 
+---
 
-
+## 👨‍💻 Author
+**Aneesh Sagar Reddy**  
+B.Tech CSE (AI & Engineering), Amrita School of Engineering  
+Passionate about **Cybersecurity, AI, and Web Development**.
